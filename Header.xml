@@ -2,8 +2,8 @@
 
 <root>
   <game>CryoFall</game>
-  <id>PragmaSensorTriangulator</id>
-  <title>Pragma Sensor Triangulator</title>
+  <id>MyMod</id>
+  <title>Pragma Finder</title>
   <author>Jason Goemaat</author>
   <description>Helper for showing distances for pragma sensor pings</description>
   <!-- Please increment this version every time you're releasing an update -->
@@ -14,5 +14,5 @@
   <!-- Please note: mods of type 1 are ignored on client (cannot see and activate them)
                     mods of type 2 are enabled automatically when you're connecting to the server using them
                     mods of type 3 are ignored on server (cannot see and activate them) -->
-  <modtype>2</modtype>
+  <modtype>3</modtype>
 </root>
