@@ -17,5 +17,11 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Core.cpk\AtomicTorch.CBND.CoreMod.csproj" />
+  </ItemGroup>    
+  
+  <ItemGroup>
+    <Page Update="UI\PragmaFinder\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>  
 </Project>

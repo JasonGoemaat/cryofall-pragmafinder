@@ -4,6 +4,7 @@ using AtomicTorch.CBND.GameApi.Data;
 using AtomicTorch.CBND.GameApi.Data.Characters;
 using AtomicTorch.CBND.GameApi.Scripting;
 using MyMod.Scripts.MyMod;
+using MyMod.UI.PragmaFinder;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -52,6 +53,7 @@ namespace MyMod.Scripts.MyMod
         private static void OnToggleButton()
         {
             Api.Logger.Important("MyMod.Bootstrapper.OnTestButton()");
+            MainWindow.Toggle();
         }
 
         private static void OnAll()
