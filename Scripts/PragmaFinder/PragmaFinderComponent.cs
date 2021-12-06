@@ -1,7 +1,9 @@
-﻿using AtomicTorch.CBND.CoreMod.Items.Tools.Special;
+﻿using AtomicTorch.CBND.CoreMod.Helpers.Client;
+using AtomicTorch.CBND.CoreMod.Items.Tools.Special;
 using AtomicTorch.CBND.GameApi.Data.Items;
 using AtomicTorch.CBND.GameApi.Scripting;
 using AtomicTorch.CBND.GameApi.Scripting.ClientComponents;
+using AtomicTorch.GameEngine.Common.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -50,6 +52,7 @@ namespace MyMod.Scripts.MyMod
         }
 
         double timeSinceLastUpdate = 0;
+        Vector2D pingPosition;
 
         public override void Update(double deltaTime)
         {
@@ -65,6 +68,7 @@ namespace MyMod.Scripts.MyMod
 
         double timeSincePing = 0;
         bool havePing = false;
+        bool hadPong = false;
 
         private void SignalReceivedHandler(IItem itemSignalSource, PragmiumSensorSignalKind signalKind)
         {
@@ -76,9 +80,21 @@ namespace MyMod.Scripts.MyMod
 
             if (signalKind == PragmiumSensorSignalKind.Ping)
             {
-                havePing = true;
-                timeSincePing = 0;
-                Api.Logger.Important("MyMod: PragmiumFinderComponent - Ping!");
+                if (timeSincePing < 2.8 || timeSincePing > 3.2)
+                {
+                    // offset ping, possibly just started so ignore
+                    havePing = false;
+                    timeSincePing = 0;
+                } else
+                {
+                    havePing = true;
+                    timeSincePing = 0;
+
+                    var player = ClientCurrentCharacterHelper.Character;
+                    pingPosition = player.Position;
+                    Api.Logger.Important($"PragmiumPing({pingPosition.X},{pingPosition.X},{hadPong})");
+                }
+
                 return;
             }
 
@@ -87,7 +103,9 @@ namespace MyMod.Scripts.MyMod
                 if (havePing)
                 {
                     havePing = false;
+                    hadPong = true;
                     Api.Logger.Important($"MyMod: PragmiumFinderComponent - Pong! {timeSincePing} seconds");
+                    Api.Logger.Important($"PragmiumPong({pingPosition.X},{pingPosition.X},{timeSincePing})");
                     return;
                 }
                 

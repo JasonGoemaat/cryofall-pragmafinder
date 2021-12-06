@@ -19,18 +19,28 @@
 
     <core:GameWindow x:Name="GameWindow"
                      Width="{StaticResource GameMenuStandardWindowWidth}"
-                     Height="{StaticResource GameMenuStandardWindowHeight}">
-        <Grid>
-            <Ellipse x:Name="EllipseInnerBackground"
-                 Stretch="Fill"
-                 RenderTransformOrigin="0.5,0.5"
-                 Stroke="Transparent"
-                 StrokeThickness="5"
-                 Margin="1">
-                <Ellipse.Fill>
-                    <SolidColorBrush Color="#FFFF0000" />
-                </Ellipse.Fill>
-            </Ellipse>
+                     Height="{StaticResource GameMenuStandardWindowHeight}"
+                     Background="DarkBlue">
+            <Canvas Width="400" Height="400" Background="Black">
+                <!-- Inner static ellipse -->
+                <Ellipse x:Name="EllipseInnerBackground"
+                     Stretch="Fill"
+                     RenderTransformOrigin="0.5,0.5"
+                     Stroke="Transparent"
+                     StrokeThickness="5"
+                     Margin="1"
+                     Canvas.Left="100"
+                     Canvas.Top="100"
+                     Width="200"
+                     Height="200"
+                     >
+                    <Ellipse.Fill>
+                        <SolidColorBrush Color="#FFFF0000" />
+                    </Ellipse.Fill>
+                </Ellipse>
+                <Ellipse Fill="Gainsboro" Canvas.Left="25" Canvas.Top="25" Width="200" Height="200" />
+            </Canvas>
+            </Grid>
         </Grid>
     </core:GameWindow>
 </core:BaseUserControlWithWindow>
