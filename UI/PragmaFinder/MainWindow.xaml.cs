@@ -3,6 +3,7 @@
     using AtomicTorch.CBND.CoreMod.UI.Controls.Core;
     using AtomicTorch.CBND.GameApi.Scripting;
     using MyMod.UI.PragmaFinder.Data;
+    using System.Windows;
 
     // ReSharper disable once RedundantExtendsListEntry
     public partial class MainWindow : BaseUserControlWithWindow
@@ -10,6 +11,11 @@
         public static MainWindow Instance { get; private set; }
 
         public ViewModelMainWindow ViewModel { get; set; }
+
+        protected override void WindowOpening()
+        {
+            Api.Logger.Warning("MainWindow - WindowOpening()!");
+        }
 
         public static void Toggle()
         {
@@ -49,5 +55,13 @@
                 Instance = null;
             }
         }
+
+        ///////  This isn't valid?
+        //protected override void OnGotFocus(RoutedEventArgs e)
+        //{
+        //    base.OnGotFocus(e);
+
+        //    Api.Logger.Warning("MainWindow got focus!");
+        //}
     }
 }
