@@ -85,7 +85,7 @@
             // special when no pong received, maximum circle
             if (timeSincePing == 0)
             {
-                double radius = 50;
+                double radius = 100;
 
                 HiddenEllipses.Add(new ViewModelEllipse()
                 {
