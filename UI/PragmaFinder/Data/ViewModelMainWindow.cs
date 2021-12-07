@@ -31,25 +31,33 @@
             Pong(10060, 10000, 0.6);
             Pong(10080, 10000, 0.3);
 
-            HiddenEllipses.Add(new ViewModelEllipse()
-            {
-                Left = 0,
-                Top = 0,
-                Width = 300,
-                Height = 300,
-                Color = Color.FromArgb(255,255,255,255),
-                Thickness = 20,
-                XTransform = 0,
-                YTransform = 0
-            });
-
-
+            //HiddenEllipses.Add(new ViewModelEllipse()
+            //{
+            //    Left = 0,
+            //    Top = 0,
+            //    Width = 300,
+            //    Height = 300,
+            //    Color = Color.FromArgb(255,255,255,255),
+            //    Thickness = 20,
+            //    XTransform = 0,
+            //    YTransform = 0
+            //});
 
             Instance = this;
         }
 
         public void Reset()
         {
+            foreach (var e in VisibleEllipses)
+            {
+                e.Dispose();
+            }
+
+            foreach (var e in HiddenEllipses)
+            {
+                e.Dispose();
+            }
+
             VisibleEllipses.Clear();
             HiddenEllipses.Clear();
         }
@@ -58,26 +66,48 @@
         {
             foreach (var e in VisibleEllipses)
             {
-                e.XTransform = (int)(-x + 200);
-                e.YTransform = (int)(-y + 200);
+                e.XTransform = (int)(-x + 100);
+                e.YTransform = (int)(y + 100);
             }
 
             foreach (var e in HiddenEllipses)
             {
-                e.XTransform = (int)(-x + 200);
-                e.YTransform = (int)(-y + 200);
+                e.XTransform = (int)(-x + 100);
+                e.YTransform = (int)(y + 100);
             }
         }
 
         public void Pong(double x, double y, double timeSincePing)
         {
+            Color color = Color.FromArgb(255, 255, 255, 255); // not used, can't get binding to work with value converter
+            Color hiddenColor = Color.FromArgb(255, 0, 0, 0); // not used, can't get binding to work with value converter
+
+            // special when no pong received, maximum circle
+            if (timeSincePing == 0)
+            {
+                double radius = 50;
+
+                HiddenEllipses.Add(new ViewModelEllipse()
+                {
+                    Left = x - radius,
+                    Top = -y - radius,
+                    Width = radius * 2,
+                    Height = radius * 2,
+                    Color = hiddenColor,
+                    Thickness = radius,
+                    XTransform = (int)-x + 100,
+                    YTransform = (int)y + 100
+                });
+
+                //UpdatePosition(x, y);
+
+                return;
+            }
+
             int stage = (int)(Math.Round(timeSincePing / 0.3));
             int outerRadius = stage * 20;
             int innerRadius = outerRadius - 20;
             int superOuterRadius = outerRadius + 60;
-
-            Color color = Color.FromArgb(255, 255, 255, 255);
-            Color hiddenColor = Color.FromArgb(255, 0, 0, 0);
 
             switch (stage)
             {
@@ -104,41 +134,41 @@
             VisibleEllipses.Add(new ViewModelEllipse()
             {
                 Left = x - outerRadius,
-                Top = y - outerRadius,
+                Top = -y - outerRadius,
                 Width = outerRadius * 2,
                 Height = outerRadius * 2,
                 Color = color,
                 Thickness = 20,
-                XTransform = (int)-x,
-                YTransform = (int)-y
+                XTransform = (int)-x + 100,
+                YTransform = (int)y + 100
             });
 
             HiddenEllipses.Add(new ViewModelEllipse()
             {
                 Left = x - innerRadius,
-                Top = y - innerRadius,
+                Top = -y - innerRadius,
                 Width = innerRadius * 2,
                 Height = innerRadius * 2,
                 Color = hiddenColor,
-                Thickness = innerRadius,
-                XTransform = (int)-x,
-                YTransform = (int)-y
+                Thickness = innerRadius - 2,
+                XTransform = (int)-x + 100,
+                YTransform = (int)y + 100
             });
 
 
             HiddenEllipses.Add(new ViewModelEllipse()
             {
                 Left = x - superOuterRadius,
-                Top = y - superOuterRadius,
+                Top = -y - superOuterRadius,
                 Width = superOuterRadius * 2,
                 Height = superOuterRadius * 2,
                 Color = hiddenColor,
-                Thickness = 60,
-                XTransform = (int)-x,
-                YTransform = (int)-y
+                Thickness = 60 - 2,
+                XTransform = (int)-x + 100,
+                YTransform = (int)y + 100
             });
 
-            UpdatePosition(x, y);
+            //UpdatePosition(x, y);
         }
 
         //private void OnIsEnabledChanged()
@@ -150,6 +180,15 @@
         {
             base.DisposeViewModel();
 
+            foreach (var e in VisibleEllipses)
+            {
+                e.Dispose();
+            }
+
+            foreach (var e in HiddenEllipses)
+            {
+                e.Dispose();
+            }
             //foreach (var viewModelSettings in AllSettings)
             //{
             //    viewModelSettings.Dispose();

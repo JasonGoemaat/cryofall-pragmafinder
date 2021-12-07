@@ -4,6 +4,7 @@ using AtomicTorch.CBND.GameApi.Data.Items;
 using AtomicTorch.CBND.GameApi.Scripting;
 using AtomicTorch.CBND.GameApi.Scripting.ClientComponents;
 using AtomicTorch.GameEngine.Common.Primitives;
+using MyMod.UI.PragmaFinder.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +15,7 @@ namespace MyMod.Scripts.MyMod
 {
     public class MyModComponent : ClientComponent
     {
-        public static double UpdateInterval => 5.0;
+        public static double UpdateInterval => 1.0;
 
         //public static WriteableBitmap Bitmap;
 
@@ -61,8 +62,10 @@ namespace MyMod.Scripts.MyMod
             timeSinceLastUpdate += deltaTime;
             if (timeSinceLastUpdate >= UpdateInterval)
             {
-                Api.Logger.Important("MyModComponent.Update()");
+                //Api.Logger.Important("MyModComponent.Update()");
                 timeSinceLastUpdate = 0;
+                var player = ClientCurrentCharacterHelper.Character;
+                ViewModelMainWindow.Instance?.UpdatePosition(player.Position.X, player.Position.Y);
             }
         }
 
@@ -84,15 +87,24 @@ namespace MyMod.Scripts.MyMod
                 {
                     // offset ping, possibly just started so ignore
                     havePing = false;
+                    hadPong = false;
                     timeSincePing = 0;
-                } else
+                }
+                else
                 {
-                    havePing = true;
-                    timeSincePing = 0;
+                    if (havePing && !hadPong)
+                    {
+                        ViewModelMainWindow.Instance?.Pong(pingPosition.X, pingPosition.Y, 0);
+                        Api.Logger.Important($"Ping with no pong - PragmiumPing({pingPosition.X},{pingPosition.X},{hadPong})");
+                    }
 
                     var player = ClientCurrentCharacterHelper.Character;
                     pingPosition = player.Position;
                     Api.Logger.Important($"PragmiumPing({pingPosition.X},{pingPosition.X},{hadPong})");
+
+                    havePing = true;
+                    hadPong = false;
+                    timeSincePing = 0;
                 }
 
                 return;
@@ -100,12 +112,13 @@ namespace MyMod.Scripts.MyMod
 
             if (signalKind == PragmiumSensorSignalKind.Pong)
             {
-                if (havePing)
+                if (havePing && !hadPong)
                 {
                     havePing = false;
                     hadPong = true;
                     Api.Logger.Important($"MyMod: PragmiumFinderComponent - Pong! {timeSincePing} seconds");
                     Api.Logger.Important($"PragmiumPong({pingPosition.X},{pingPosition.X},{timeSincePing})");
+                    ViewModelMainWindow.Instance?.Pong(pingPosition.X, pingPosition.Y, timeSincePing);
                     return;
                 }
                 

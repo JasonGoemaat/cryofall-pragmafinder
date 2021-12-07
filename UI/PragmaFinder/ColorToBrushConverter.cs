@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AtomicTorch.CBND.GameApi.Scripting;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -11,6 +12,8 @@ namespace MyMod.UI.PragmaFinder
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            Api.Logger.Important($"Converting {value} to type {targetType} with parameter {parameter}");
+
             if (value is Color)
             {
                 return new SolidColorBrush((Color)value);

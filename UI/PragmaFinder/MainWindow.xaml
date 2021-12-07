@@ -16,25 +16,29 @@
                 <ResourceDictionary Source="/UI/Styles/RequiredStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        <local:ColorToBrushConverter x:Key="ColorToBrushConverter" />
     </base:BaseUserControl.Resources>
-
+    
     <base:BaseUserControl.DataContext>
         <data:ViewModelMainWindow />
     </base:BaseUserControl.DataContext>
 
     <core:GameWindow x:Name="GameWindow"
-                     Width="450"
-                     Height="450"
-                     Background="DarkBlue">
+                     Width="220"
+                     Height="220"
+                     Background="DarkBlue" Focusable="False" CloseByEscapeKey="False" IsTabStop="False">
+
+        <core:GameWindow.Resources>
+            <local:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+        </core:GameWindow.Resources>
+
         <core:GameWindow.RenderTransform>
-            <TranslateTransform X="0" Y="0" />
+            <TranslateTransform X="-300" Y="-200" />
         </core:GameWindow.RenderTransform>
         <Grid>
             <ItemsControl x:Name="icVisible" ItemsSource="{Binding VisibleEllipses}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas  Width="400" Height="400" Background="Blue" ClipToBounds="True"/>
+                        <Canvas  Width="200" Height="200" Background="DarkGray" ClipToBounds="True"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>
@@ -48,7 +52,7 @@
                         <Ellipse
                             Width="{Binding Width}"
                             Height="{Binding Height}"
-                            Stroke="Red"
+                            Stroke="#8000ff00"
                             StrokeThickness="{Binding Thickness}">
                             <Ellipse.RenderTransform>
                                 <TranslateTransform x:Name="visibleEllipseTransform" X="{Binding XTransform}" Y="{Binding YTransform}" />
@@ -61,7 +65,7 @@
             <ItemsControl x:Name="icHidden" ItemsSource="{Binding HiddenEllipses}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas  Width="400" Height="400" Background="Transparent" ClipToBounds="True" />
+                        <Canvas  Width="200" Height="200" Background="Transparent" ClipToBounds="True" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>
@@ -75,7 +79,7 @@
                         <Ellipse
                             Width="{Binding Width}"
                             Height="{Binding Height}"
-                            Stroke="{Binding Color, Converter={StaticResource ColorToBrushConverter}}"
+                            Stroke="#c0000000"
                             StrokeThickness="{Binding Thickness}">
                             <Ellipse.RenderTransform>
                                 <TranslateTransform x:Name="hiddenEllipseTransform" X="{Binding XTransform}" Y="{Binding YTransform}" />
@@ -86,8 +90,8 @@
             </ItemsControl>
 
             <Canvas Width="400" Height="400" Background="Transparent" ClipToBounds="True">
-                <Line X1="200" Y1="0" X2="200" Y2="400" Stroke="White" />
-                <Line X1="0" Y1="200" X2="400" Y2="200" Stroke="White" />
+                <Line X1="100" Y1="0" X2="100" Y2="200" Stroke="White" />
+                <Line X1="0" Y1="100" X2="200" Y2="100" Stroke="White" />
             </Canvas>
         </Grid>
     </core:GameWindow>
