@@ -42,7 +42,25 @@
         {
             base.OnLoaded();
             Window.IsCached = true;
-            DataContext = ViewModel = new ViewModelMainWindow();
+            
+            if (DataContext == null)
+            {
+                Api.Logger.Warning("DataContext is null");
+                DataContext = ViewModel = new ViewModelMainWindow();
+            }
+            else
+            {
+                Api.Logger.Warning("DataContext is NOT null");
+                ViewModel = DataContext as ViewModelMainWindow;
+                foreach (var e in ViewModel.VisibleEllipses)
+                {
+                    Api.Logger.Important($"VisibleEllipse({e.Left},{e.Top},{e.Width},{e.Height},{e.Thickness}) - {e.XTransform},{e.YTransform},RGBA({e.Color.A},{e.Color.R},{e.Color.G},{e.Color.B})");
+                }
+                foreach (var e in ViewModel.HiddenEllipses)
+                {
+                    Api.Logger.Important($"HiddenEllipse({e.Left},{e.Top},{e.Width},{e.Height},{e.Thickness}) - {e.XTransform},{e.YTransform},RGBA({e.Color.A},{e.Color.R},{e.Color.G},{e.Color.B})");
+                }
+            }
         }
 
         protected override void OnUnloaded()

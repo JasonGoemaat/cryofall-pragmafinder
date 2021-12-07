@@ -2,11 +2,17 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="UI\MyMiniMap\MyMiniMap.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\PragmaFinder\MainWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="UI\MyMiniMap\MyMiniMap.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="UI\PragmaFinder\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

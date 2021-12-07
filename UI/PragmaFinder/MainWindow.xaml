@@ -1,12 +1,13 @@
 ﻿<core:BaseUserControlWithWindow
-    x:Class="CryoFall.Automaton.UI.MainWindow"
+    x:Class="MyMod.UI.PragmaFinder.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:core="clr-namespace:AtomicTorch.CBND.CoreMod.UI.Controls.Core;assembly=Core"
     xmlns:loc="clr-namespace:AtomicTorch.CBND.CoreMod.UI;assembly=Core"
     xmlns:base="clr-namespace:AtomicTorch.GameEngine.Common.Client.MonoGame.UI;assembly=AtomicTorch.CBND.GameApi.WPF.Stubs"
-    xmlns:data="clr-namespace:MyMod.UI.PragmaFinder"
-    xmlns:data1="clr-namespace:MyMod.UI.PragmaFinder.Data">
+    
+    xmlns:data="clr-namespace:MyMod.UI.PragmaFinder.Data"
+    xmlns:local="clr-namespace:MyMod.UI.PragmaFinder">
 
     <base:BaseUserControl.Resources>
         <ResourceDictionary>
@@ -15,32 +16,79 @@
                 <ResourceDictionary Source="/UI/Styles/RequiredStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+        <local:ColorToBrushConverter x:Key="ColorToBrushConverter" />
     </base:BaseUserControl.Resources>
 
+    <base:BaseUserControl.DataContext>
+        <data:ViewModelMainWindow />
+    </base:BaseUserControl.DataContext>
+
     <core:GameWindow x:Name="GameWindow"
-                     Width="{StaticResource GameMenuStandardWindowWidth}"
-                     Height="{StaticResource GameMenuStandardWindowHeight}"
+                     Width="450"
+                     Height="450"
                      Background="DarkBlue">
-            <Canvas Width="400" Height="400" Background="Black">
-                <!-- Inner static ellipse -->
-                <Ellipse x:Name="EllipseInnerBackground"
-                     Stretch="Fill"
-                     RenderTransformOrigin="0.5,0.5"
-                     Stroke="Transparent"
-                     StrokeThickness="5"
-                     Margin="1"
-                     Canvas.Left="100"
-                     Canvas.Top="100"
-                     Width="200"
-                     Height="200"
-                     >
-                    <Ellipse.Fill>
-                        <SolidColorBrush Color="#FFFF0000" />
-                    </Ellipse.Fill>
-                </Ellipse>
-                <Ellipse Fill="Gainsboro" Canvas.Left="25" Canvas.Top="25" Width="200" Height="200" />
+        <core:GameWindow.RenderTransform>
+            <TranslateTransform X="0" Y="0" />
+        </core:GameWindow.RenderTransform>
+        <Grid>
+            <ItemsControl x:Name="icVisible" ItemsSource="{Binding VisibleEllipses}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas  Width="400" Height="400" Background="Blue" ClipToBounds="True"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Left}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Top}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.Resources>
+                    <DataTemplate DataType="{x:Type data:ViewModelEllipse}">
+                        <Ellipse
+                            Width="{Binding Width}"
+                            Height="{Binding Height}"
+                            Stroke="Red"
+                            StrokeThickness="{Binding Thickness}">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform x:Name="visibleEllipseTransform" X="{Binding XTransform}" Y="{Binding YTransform}" />
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </DataTemplate>
+                </ItemsControl.Resources>
+            </ItemsControl>
+
+            <ItemsControl x:Name="icHidden" ItemsSource="{Binding HiddenEllipses}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas  Width="400" Height="400" Background="Transparent" ClipToBounds="True" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Left}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Top}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.Resources>
+                    <DataTemplate DataType="{x:Type data:ViewModelEllipse}">
+                        <Ellipse
+                            Width="{Binding Width}"
+                            Height="{Binding Height}"
+                            Stroke="{Binding Color, Converter={StaticResource ColorToBrushConverter}}"
+                            StrokeThickness="{Binding Thickness}">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform x:Name="hiddenEllipseTransform" X="{Binding XTransform}" Y="{Binding YTransform}" />
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </DataTemplate>
+                </ItemsControl.Resources>
+            </ItemsControl>
+
+            <Canvas Width="400" Height="400" Background="Transparent" ClipToBounds="True">
+                <Line X1="200" Y1="0" X2="200" Y2="400" Stroke="White" />
+                <Line X1="0" Y1="200" X2="400" Y2="200" Stroke="White" />
             </Canvas>
-            </Grid>
         </Grid>
     </core:GameWindow>
 </core:BaseUserControlWithWindow>
