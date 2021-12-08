@@ -5,9 +5,34 @@
     using System.Windows.Media;
     using AtomicTorch.CBND.CoreMod.UI.Controls.Core;
     using AtomicTorch.CBND.GameApi.Scripting;
+    using AtomicTorch.GameEngine.Common.Client.MonoGame.UI;
 
     public class ViewModelHUD : BaseViewModel
     {
+        public enum ModeEnum
+        {
+            Pragmium = 0,
+            Generic = 1
+        }
+
+        ModeEnum mode = ModeEnum.Pragmium;
+
+        public ModeEnum Mode
+        {
+            get => mode;
+            set
+            {
+                mode = value;
+                this.NotifyPropertyChanged("Mode");
+                this.NotifyPropertyChanged("IsModePragmium");
+                this.NotifyPropertyChanged("IsModeGeneric");
+            }
+        }
+
+        public bool IsModePragmium => Mode == ModeEnum.Pragmium;
+
+        public bool IsModeGeneric => Mode == ModeEnum.Generic;
+
         double centerX, centerY;
 
         bool isHUDVisible = true;
@@ -31,11 +56,14 @@
             VisibleEllipses = new ObservableCollection<ViewModelEllipse>();
             HiddenEllipses = new ObservableCollection<ViewModelEllipse>();
 
-            Pong(10000, 10000, 1.5);
-            Pong(10020, 10000, 1.2);
-            Pong(10040, 10000, 0.9);
-            Pong(10060, 10000, 0.6);
-            Pong(10080, 10000, 0.3);
+            ClearCommand = new ActionCommand(() => this.Clear());
+            PragmiumCommand = new ActionCommand(() => this.Mode = ModeEnum.Pragmium);
+            GenericCommand = new ActionCommand(() => this.Mode = ModeEnum.Generic);
+            ToggleModeCommand = new ActionCommand(() =>
+            {
+                this.Mode = (this.Mode == ModeEnum.Pragmium) ? ModeEnum.Generic : ModeEnum.Pragmium;
+                Api.Logger.Warning($"Mode changed to {this.Mode}");
+            });
         }
 
         public void Clear()
@@ -205,5 +233,13 @@
 
             //AutomatonManager.IsEnabledChanged -= OnIsEnabledChanged;
         }
+
+        public BaseCommand ClearCommand { get; }
+
+        public BaseCommand PragmiumCommand { get; }
+
+        public BaseCommand GenericCommand { get; }
+
+        public BaseCommand ToggleModeCommand { get; }
     }
 }

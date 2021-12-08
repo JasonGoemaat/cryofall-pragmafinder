@@ -13,19 +13,22 @@
     xmlns:local="clr-namespace:MyMod.UI.PragmaFinder"
     mc:Ignorable="d"
     d:DesignHeight="200" d:DesignWidth="200"
-    d:DataContext="{d:DesignInstance data:ViewModelMainWindow}">
+    d:DataContext="{d:DesignInstance data:ViewModelHUD}">
 
     <base:BaseUserControl.Resources>
         <local:ColorToBrushConverter x:Key="ColorToBrushConverter" />
     </base:BaseUserControl.Resources>
 
-    <Grid x:Name="LayoutRoot">
-        <Canvas Visibility="{Binding IsHUDVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-                Background="Transparent"
-                IsHitTestVisible="False">
+    <Canvas Visibility="{Binding IsHUDVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+            Background="Transparent"
+            Width="200"
+            Height="240"
+            Margin="0,50,250,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            >
+        <StackPanel Width="200">
             <Grid Width="200" Height="200" IsHitTestVisible="True" Opacity="0.85">
-                <Canvas.Right>250</Canvas.Right>
-                <Canvas.Top>50</Canvas.Top>
                 <Border Style="{StaticResource WidgetBorderShadowStyle}" />
 
                 <Border Background="#66444444"
@@ -93,6 +96,34 @@
                     <Line X1="0" Y1="100" X2="200" Y2="100" Stroke="White" />
                 </Canvas>
             </Grid>
-        </Canvas>
-    </Grid>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="ClearButton"
+                        Content="Clear"
+                        Command="{Binding ClearCommand}"
+                        Width="65"
+                        FontSize="10"
+                        Padding="0,0,0,0"
+                        Margin="0,0,0,0">
+                </Button>
+                <Button x:Name="GenericButton"
+                        Content="Generic"
+                        Command="{Binding ToggleModeCommand}"
+                        Width="65"
+                        FontSize="10"
+                        Padding="0,0,0,0"
+                        Margin="0,0,0,0"
+                        Visibility="{Binding IsModeGeneric, Converter={StaticResource BoolToVisibilityConverter}}">
+                </Button>
+                <Button x:Name="PragmiumButton"
+                        Content="Prag"
+                        Command="{Binding ToggleModeCommand}"
+                        Width="65"
+                        FontSize="10"
+                        Padding="0,0,0,0"
+                        Margin="0,0,0,0"
+                        Visibility="{Binding IsModePragmium, Converter={StaticResource BoolToVisibilityConverter}}">
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </Canvas>
 </base:BaseUserControl>
