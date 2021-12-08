@@ -26,6 +26,7 @@
             Margin="0,50,250,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
+            x:Name="canvasMain"
             >
         <StackPanel Width="200">
             <Grid Width="200" Height="200" IsHitTestVisible="True" Opacity="0.85">
@@ -37,7 +38,7 @@
 
                 <Border Style="{StaticResource WidgetBorderStyle}" />
 
-                <ItemsControl x:Name="icVisible" ItemsSource="{Binding VisibleEllipses}">
+                <ItemsControl x:Name="icVisible" ItemsSource="{Binding VisibleEllipses}" Visibility="{Binding IsModePragmium, Converter={StaticResource BoolToVisibilityConverter}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas  Width="200" Height="200" Background="DarkGray" ClipToBounds="True"/>
@@ -64,7 +65,7 @@
                     </ItemsControl.Resources>
                 </ItemsControl>
 
-                <ItemsControl x:Name="icHidden" ItemsSource="{Binding HiddenEllipses}">
+                <ItemsControl x:Name="icHidden" ItemsSource="{Binding HiddenEllipses}" Visibility="{Binding IsModePragmium, Converter={StaticResource BoolToVisibilityConverter}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas  Width="200" Height="200" Background="Transparent" ClipToBounds="True" />
@@ -91,6 +92,49 @@
                     </ItemsControl.Resources>
                 </ItemsControl>
 
+                <!--<Canvas Width="200" Height="200" Background="DarkGray" Visibility="{Binding IsModeGeneric, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Rectangle Fill="Red" Canvas.Left="10369" Canvas.Top="-10397" Width="40" Height="40">
+                        <Rectangle.RenderTransform>
+                            <TranslateTransform x:Name="testGenericPathTransform" X="{Binding XTransform}" Y="{Binding YTransform}" />
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <Path Data="{Binding GenericGeometry}" Fill="Green" Stroke="Black" StrokeThickness="1">
+                        <Path.RenderTransform>
+                            <TranslateTransform x:Name="genericPathTransform" X="{Binding XTransform}" Y="{Binding YTransform}" />
+                        </Path.RenderTransform>
+                    </Path>
+                </Canvas>-->
+
+                <ItemsControl x:Name="icRectangles" ItemsSource="{Binding Rectangles}" Visibility="{Binding IsModeGeneric, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas  Width="200" Height="200" Background="DarkGray" ClipToBounds="True"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding Left}" />
+                            <Setter Property="Canvas.Top" Value="{Binding Top}" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.Resources>
+                        <DataTemplate DataType="{x:Type data:ViewModelRectangle}">
+                            <Rectangle 
+                                Width="{Binding Width}"
+                                Height="{Binding Height}"
+                                Fill="#60000000">
+                                <Rectangle.RenderTransform>
+                                    <TranslateTransform x:Name="rectanglesPathTransform" X="{Binding XTransform}" Y="{Binding YTransform}" />
+                                </Rectangle.RenderTransform>
+                            </Rectangle>
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                </ItemsControl>
+                <Canvas Width="200" Height="200" Background="Transparent" ClipToBounds="True" Visibility="{Binding IsModeGeneric, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Rectangle Stroke="White" Canvas.Left="85" Canvas.Top="85" Width="31" Height="31" />
+                </Canvas>
+
+                <!-- crosshair in center -->
                 <Canvas Width="200" Height="200" Background="Transparent" ClipToBounds="True">
                     <Line X1="100" Y1="0" X2="100" Y2="200" Stroke="White" />
                     <Line X1="0" Y1="100" X2="200" Y2="100" Stroke="White" />

@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Windows;
     using System.Windows.Media;
+    using AtomicTorch.CBND.CoreMod.Helpers.Client;
     using AtomicTorch.CBND.CoreMod.UI.Controls.Core;
     using AtomicTorch.CBND.GameApi.Scripting;
     using AtomicTorch.GameEngine.Common.Client.MonoGame.UI;
@@ -23,6 +25,11 @@
             set
             {
                 mode = value;
+                if (value == ModeEnum.Generic)
+                {
+                    // this.SetTestGeometry();
+                    Rectangles.Clear();
+                }
                 this.NotifyPropertyChanged("Mode");
                 this.NotifyPropertyChanged("IsModePragmium");
                 this.NotifyPropertyChanged("IsModeGeneric");
@@ -50,11 +57,13 @@
 
         public ObservableCollection<ViewModelEllipse> VisibleEllipses { get; set; }
         public ObservableCollection<ViewModelEllipse> HiddenEllipses { get; set; }
+        public ObservableCollection<ViewModelRectangle> Rectangles { get; set; }
 
         public ViewModelHUD()
         {
             VisibleEllipses = new ObservableCollection<ViewModelEllipse>();
             HiddenEllipses = new ObservableCollection<ViewModelEllipse>();
+            Rectangles = new ObservableCollection<ViewModelRectangle>();
 
             ClearCommand = new ActionCommand(() => this.Clear());
             PragmiumCommand = new ActionCommand(() => this.Mode = ModeEnum.Pragmium);
@@ -66,6 +75,7 @@
             });
         }
 
+        #region Pragma
         public void Clear()
         {
             Api.Logger.Warning("ViewModelHUD.Clear()");
@@ -86,6 +96,7 @@
 
             VisibleEllipses.Clear();
             HiddenEllipses.Clear();
+            Rectangles.Clear();
         }
 
         public void UpdatePosition(double x, double y)
@@ -94,16 +105,41 @@
             centerX = x;
             centerY = y;
 
+            var tempx = (int)(-centerX + 100);
+            var tempy = (int)(centerY + 100);
+            this.XTransform = tempx;
+            this.YTransform = tempy;
+
+            if (this.mode == ModeEnum.Generic)
+            {
+                var px = x;
+                var py = -y;
+
+                //var newRect = new RectangleGeometry(new Rect(new Point(px - 14, py - 14), new Point(px + 14, py + 14)));
+                var rect = new ViewModelRectangle(px - 14, py - 14, 29, 29, this.XTransform, this.YTransform);
+                Rectangles.Add(rect);
+                Api.Logger.Important($"Rectangles: ({Rectangles.Count}), last Left: {rect.Left}, Top: {rect.Top}, Width: {rect.Width}, Height: {rect.Height}, transform {rect.XTransform},{rect.YTransform}");
+                var f = Rectangles[0];
+                Api.Logger.Important($"Rectangles: ({Rectangles.Count}), first Left: {f.Left}, Top: {f.Top}, Width: {f.Width}, Height: {f.Height}, transform {f.XTransform},{f.YTransform}");
+
+                foreach (var r in Rectangles)
+                {
+                    r.XTransform = this.XTransform;
+                    r.YTransform = this.YTransform;
+                }
+                
+                return;
+            }
             foreach (var e in VisibleEllipses)
             {
-                e.XTransform = (int)(-centerX + 100);
-                e.YTransform = (int)(centerY + 100);
+                e.XTransform = this.XTransform;
+                e.YTransform = this.YTransform;
             }
 
             foreach (var e in HiddenEllipses)
             {
-                e.XTransform = (int)(-centerX + 100);
-                e.YTransform = (int)(centerY + 100);
+                e.XTransform = this.XTransform;
+                e.YTransform = this.YTransform;
             }
         }
 
@@ -206,6 +242,8 @@
             // UpdatePosition(x, y);
         }
 
+        #endregion
+
         //private void OnIsEnabledChanged()
         //{
         //    // NotifyPropertyChanged(nameof(IsEnabled));
@@ -241,5 +279,82 @@
         public BaseCommand GenericCommand { get; }
 
         public BaseCommand ToggleModeCommand { get; }
+
+        #region Generic
+        // this is for combining boxes as the player moves
+
+        int xTransform;
+
+        public int XTransform
+        {
+            get => xTransform;
+
+            set
+            {
+                xTransform = value;
+                this.NotifyPropertyChanged("XTransform");
+            }
+        }
+
+        int yTransform;
+
+        public int YTransform
+        {
+            get => yTransform;
+
+            set
+            {
+                yTransform = value;
+                this.NotifyPropertyChanged("YTransform");
+            }
+        }
+
+        Geometry genericGeometry;
+
+        public Geometry GenericGeometry
+        {
+            get => genericGeometry;
+            set
+            {
+                this.genericGeometry = value;
+                this.NotifyThisPropertyChanged("GenericGeometry");
+            }
+        }
+
+        public void ResetGenericGeometry()
+        {
+            // NOT USING in favor of rectangles list
+            //this.genericGeometry = new RectangleGeometry();
+        }
+
+        public void AddPlayerPositionToGenericGeometry(double x, double y)
+        {
+            //var px = Math.Round(x);
+            //var py = -Math.Round(y);
+
+            //var newRec = new RectangleGeometry(new Rect(new Point(px - 14, py - 14), new Point(px + 14, py + 14)));
+            ////this.GenericGeometry = newRec;
+            
+            //// ERRORS - Trying to use Noesis.GeometryCombineMode and Noesis.Geometry which have different constructor argument positions
+            //var combined = new System.Windows.Media.CombinedGeometry(
+            //    GeometryCombineMode.Union, this.genericGeometry, newRec);
+            //this.GenericGeometry = combined;
+        }
+          
+        public void SetTestGeometry()
+        {
+            //this.GenericGeometry = new RectangleGeometry(new Rect(new Point(100, 100), new Point(150, 150)));
+            //return;
+
+            var player = ClientCurrentCharacterHelper.Character;
+            var x = Math.Round(player.Position.X);
+            var y = -Math.Round(player.Position.Y);
+
+            var newRec = new RectangleGeometry(new Rect(new Point(x - 14, y - 14), new Point(x + 14, y + 14)));
+
+            Api.Logger.Warning($"GenericGeometry: {newRec.Bounds.Left}, {newRec.Bounds.Top}, width {newRec.Bounds.Width}, height {newRec.Bounds.Height}");
+            this.GenericGeometry = newRec;
+        }
+        #endregion
     }
 }
