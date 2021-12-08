@@ -1,5 +1,4 @@
 ﻿using AtomicTorch.CBND.CoreMod.UI.Controls.Core;
-using AtomicTorch.GameEngine.Common.Primitives;
 using System.Windows.Media;
 
 namespace MyMod.UI.PragmaFinder.Data
@@ -100,6 +99,11 @@ namespace MyMod.UI.PragmaFinder.Data
                 this.color = value;
                 this.NotifyPropertyChanged("Color");
             }
+        }
+
+        public override string ToString()
+        {
+            return $"Ellipse({left},{top},{width},{height}, thickness:{thickness}, color:{color}, transform: {XTransform}, {YTransform})";
         }
     }
 }

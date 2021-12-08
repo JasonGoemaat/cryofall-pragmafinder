@@ -17,6 +17,10 @@ namespace MyMod.Scripts.MyMod
 
         [Description("Toggle Proximity Finder")]
         [ButtonInfo(InputKey.F8, Category = "MyMod")]
-        Toggle
+        Toggle,
+
+        [Description("Toggle HUD")]
+        [ButtonInfo(InputKey.F9, Category = "MyMod")]
+        ToggleHUD
     }
 }

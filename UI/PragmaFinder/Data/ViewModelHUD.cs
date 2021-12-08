@@ -4,10 +4,13 @@
     using System.Collections.ObjectModel;
     using System.Windows.Media;
     using AtomicTorch.CBND.CoreMod.UI.Controls.Core;
+    using AtomicTorch.CBND.GameApi.Scripting;
 
-    public class ViewModelMainWindow : BaseViewModel
+    public class ViewModelHUD : BaseViewModel
     {
-        bool isHUDVisible;
+        double centerX, centerY;
+
+        bool isHUDVisible = true;
 
         public bool IsHUDVisible
         {
@@ -23,14 +26,8 @@
         public ObservableCollection<ViewModelEllipse> VisibleEllipses { get; set; }
         public ObservableCollection<ViewModelEllipse> HiddenEllipses { get; set; }
 
-        public static ViewModelMainWindow Instance;
-
-        public ViewModelMainWindow()
+        public ViewModelHUD()
         {
-            //AllSettings = new ObservableCollection<ViewModelSettings>(
-            //AutomatonManager.GetAllSettings().Select(s => new ViewModelSettings(s)));
-            //AutomatonManager.IsEnabledChanged += OnIsEnabledChanged;
-
             VisibleEllipses = new ObservableCollection<ViewModelEllipse>();
             HiddenEllipses = new ObservableCollection<ViewModelEllipse>();
 
@@ -39,31 +36,23 @@
             Pong(10040, 10000, 0.9);
             Pong(10060, 10000, 0.6);
             Pong(10080, 10000, 0.3);
-
-            //HiddenEllipses.Add(new ViewModelEllipse()
-            //{
-            //    Left = 0,
-            //    Top = 0,
-            //    Width = 300,
-            //    Height = 300,
-            //    Color = Color.FromArgb(255,255,255,255),
-            //    Thickness = 20,
-            //    XTransform = 0,
-            //    YTransform = 0
-            //});
-
-            Instance = this;
         }
 
-        public void Reset()
+        public void Clear()
         {
+            Api.Logger.Warning("ViewModelHUD.Clear()");
+
             foreach (var e in VisibleEllipses)
             {
+                Api.Logger.Warning($"Visible: {e}");
+
                 e.Dispose();
             }
 
             foreach (var e in HiddenEllipses)
             {
+                Api.Logger.Warning($"Hidden: {e}");
+
                 e.Dispose();
             }
 
@@ -73,21 +62,27 @@
 
         public void UpdatePosition(double x, double y)
         {
+            Api.Logger.Warning($"ViewModelHUD.UpdatePosition({x}, {y})");
+            centerX = x;
+            centerY = y;
+
             foreach (var e in VisibleEllipses)
             {
-                e.XTransform = (int)(-x + 100);
-                e.YTransform = (int)(y + 100);
+                e.XTransform = (int)(-centerX + 100);
+                e.YTransform = (int)(centerY + 100);
             }
 
             foreach (var e in HiddenEllipses)
             {
-                e.XTransform = (int)(-x + 100);
-                e.YTransform = (int)(y + 100);
+                e.XTransform = (int)(-centerX + 100);
+                e.YTransform = (int)(centerY + 100);
             }
         }
 
         public void Pong(double x, double y, double timeSincePing)
         {
+            Api.Logger.Warning($"ViewModelHUD.Pong({x}, {y}, {timeSincePing})");
+
             Color color = Color.FromArgb(255, 255, 255, 255); // not used, can't get binding to work with value converter
             Color hiddenColor = Color.FromArgb(255, 0, 0, 0); // not used, can't get binding to work with value converter
 
@@ -104,11 +99,14 @@
                     Height = radius * 2,
                     Color = hiddenColor,
                     Thickness = radius,
-                    XTransform = (int)-x + 100,
-                    YTransform = (int)y + 100
+                    XTransform = (int)-centerX + 100,
+                    YTransform = (int)centerY + 100
                 });
 
                 //UpdatePosition(x, y);
+
+                int count = HiddenEllipses.Count;
+                Api.Logger.Important($"Ping with no pong, HiddenEllipses now has {count} elements");
 
                 return;
             }
@@ -148,8 +146,8 @@
                 Height = outerRadius * 2,
                 Color = color,
                 Thickness = 20,
-                XTransform = (int)-x + 100,
-                YTransform = (int)y + 100
+                XTransform = (int)-centerX + 100,
+                YTransform = (int)centerY + 100
             });
 
             HiddenEllipses.Add(new ViewModelEllipse()
@@ -160,8 +158,8 @@
                 Height = innerRadius * 2,
                 Color = hiddenColor,
                 Thickness = innerRadius - 2,
-                XTransform = (int)-x + 100,
-                YTransform = (int)y + 100
+                XTransform = (int)-centerX + 100,
+                YTransform = (int)centerY + 100
             });
 
 
@@ -173,11 +171,11 @@
                 Height = superOuterRadius * 2,
                 Color = hiddenColor,
                 Thickness = 60 - 2,
-                XTransform = (int)-x + 100,
-                YTransform = (int)y + 100
+                XTransform = (int)-centerX + 100,
+                YTransform = (int)centerY + 100
             });
 
-            //UpdatePosition(x, y);
+            // UpdatePosition(x, y);
         }
 
         //private void OnIsEnabledChanged()
@@ -187,6 +185,8 @@
 
         protected override void DisposeViewModel()
         {
+            Api.Logger.Warning($"ViewModelHUD.DisposeViewModel()");
+            
             base.DisposeViewModel();
 
             foreach (var e in VisibleEllipses)

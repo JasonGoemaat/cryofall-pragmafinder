@@ -43,24 +43,27 @@ namespace MyMod.Scripts.MyMod
             gameplayInputContext = ClientInputContext
                 .Start("MyModInputContext")
                 .HandleButtonDown(MyModButtons.Test, OnTestButton)
-                .HandleButtonDown(MyModButtons.Toggle, OnToggleButton);
+                .HandleButtonDown(MyModButtons.Toggle, OnToggleButton)
+                .HandleButtonDown(MyModButtons.ToggleHUD, OnToggleHUDButton);
         }
 
         private static void OnTestButton()
         {
             Api.Logger.Important("MyMod.Bootstrapper.OnTestButton()");
             ViewModelMainWindow.Instance?.Reset();
+            HUDPragmaFinder.Instance?.Clear();
         }
 
         private static void OnToggleButton()
         {
-            Api.Logger.Important("MyMod.Bootstrapper.OnTestButton()");
+            Api.Logger.Important("MyMod.Bootstrapper.OnToggleButton()");
             MainWindow.Toggle();
         }
 
-        private static void OnAll()
+        private static void OnToggleHUDButton()
         {
-            Api.Logger.Important("MyMod.Bootstrapper.OnAll()");
+            Api.Logger.Important("MyMod.Bootstrapper.OnToggleHUDButton()");
+            HUDPragmaFinder.Toggle();
         }
 
         private static void ResetHandler()

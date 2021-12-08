@@ -23,6 +23,9 @@
     <Page Update="UI\MyMiniMap\MyMiniMap.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="UI\PragmaFinder\HUDPragmaFinder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="UI\PragmaFinder\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,12 +5,18 @@
     <Compile Update="UI\MyMiniMap\MyMiniMap.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UI\PragmaFinder\HUDPragmaFinder.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\PragmaFinder\MainWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="UI\MyMiniMap\MyMiniMap.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UI\PragmaFinder\HUDPragmaFinder.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UI\PragmaFinder\MainWindow.xaml">

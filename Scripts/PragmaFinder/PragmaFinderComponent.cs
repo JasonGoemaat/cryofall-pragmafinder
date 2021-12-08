@@ -4,6 +4,7 @@ using AtomicTorch.CBND.GameApi.Data.Items;
 using AtomicTorch.CBND.GameApi.Scripting;
 using AtomicTorch.CBND.GameApi.Scripting.ClientComponents;
 using AtomicTorch.GameEngine.Common.Primitives;
+using MyMod.UI.PragmaFinder;
 using MyMod.UI.PragmaFinder.Data;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace MyMod.Scripts.MyMod
 
         public static void Init()
         {
-            Api.Logger.Error("MyModComponent.Init()");
+            // Api.Logger.Error("MyModComponent.Init()"); // at least errors will show up without opening console
             if (Instance != null)
             {
                 Api.Logger.Error("MyModComponent: Instance already exist.");
@@ -66,6 +67,7 @@ namespace MyMod.Scripts.MyMod
                 timeSinceLastUpdate = 0;
                 var player = ClientCurrentCharacterHelper.Character;
                 ViewModelMainWindow.Instance?.UpdatePosition(player.Position.X, player.Position.Y);
+                HUDPragmaFinder.Instance?.UpdatePosition(player.Position.X, player.Position.Y);
             }
         }
 
@@ -95,6 +97,7 @@ namespace MyMod.Scripts.MyMod
                     if (havePing && !hadPong)
                     {
                         ViewModelMainWindow.Instance?.Pong(pingPosition.X, pingPosition.Y, 0);
+                        HUDPragmaFinder.Instance?.Pong(pingPosition.X, pingPosition.Y, 0);
                         Api.Logger.Important($"Ping with no pong - PragmiumPing({pingPosition.X},{pingPosition.X},{hadPong})");
                     }
 
@@ -119,6 +122,7 @@ namespace MyMod.Scripts.MyMod
                     Api.Logger.Important($"MyMod: PragmiumFinderComponent - Pong! {timeSincePing} seconds");
                     Api.Logger.Important($"PragmiumPong({pingPosition.X},{pingPosition.X},{timeSincePing})");
                     ViewModelMainWindow.Instance?.Pong(pingPosition.X, pingPosition.Y, timeSincePing);
+                    HUDPragmaFinder.Instance?.Pong(pingPosition.X, pingPosition.Y, timeSincePing);
                     return;
                 }
                 
